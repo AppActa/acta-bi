@@ -1,0 +1,2136 @@
+{
+  "datasets": [
+    {
+      "name": "43758308",
+      "displayName": "gold_kpi_tarefas_empresa",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.gold_kpi_tarefas_empresa",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "c8c85230",
+      "displayName": "gold_evolucao_tarefas",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.gold_evolucao_tarefas",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "0eb28ce1",
+      "displayName": "gold_kpi_ciclos",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.gold_kpi_ciclos",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "066029fa",
+      "displayName": "gold_kpi_desempenho_por_estado",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.gold_kpi_desempenho_por_estado",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "aaef9d4e",
+      "displayName": "gold_kpi_treinamentos",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.gold_kpi_treinamentos",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ae73e767",
+      "displayName": "gold_kpi_usuario",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.gold_kpi_usuario",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "841752b2",
+      "displayName": "ciclos_usuarios",
+      "queryLines": [
+        "SELECT\n",
+        "    u.id_dim_usuario,\n",
+        "    u.nome_usuario,\n",
+        "    e.nome_empresa,\n",
+        "    c.id_dim_ciclo,\n",
+        "    c.titulo_ciclo,\n",
+        "    c.status_ciclo,\n",
+        "    c.data_inicio,\n",
+        "    c.data_estimada_fim,\n",
+        "    uc.papel_ciclo\n",
+        "FROM workspace.silver.silver_usuario_ciclo uc\n",
+        "JOIN workspace.silver.silver_usuario u\n",
+        "    ON uc.id_usuario = u.id_dim_usuario\n",
+        "JOIN workspace.silver.silver_ciclo c\n",
+        "    ON uc.id_ciclo = c.id_dim_ciclo\n",
+        "JOIN workspace.silver.silver_empresa e\n",
+        "    ON c.id_dim_empresa = e.id_dim_empresa\n",
+        "ORDER BY u.id_dim_usuario, c.data_inicio\n",
+        "LIMIT 50;\n"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "fd3ccd2d",
+      "displayName": "Visão Geral",
+      "layout": [
+        {
+          "widget": {
+            "name": "total-de-tarefas",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "sum(total_tarefas)",
+                      "expression": "SUM(`total_tarefas`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size: 18px;\">Total de Tarefas</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_tarefas)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "tarefas-atrasadas",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "countdistinct(nome_empresa)",
+                      "expression": "COUNT(DISTINCT `nome_empresa`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:20px\">Total de Empresas</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(nome_empresa)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "tarefas-bloqueadas",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "0eb28ce1",
+                  "fields": [
+                    {
+                      "name": "avg(taxa_metas_atingidas_pct)",
+                      "expression": "AVG(`taxa_metas_atingidas_pct`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:20px\">Taxa de Metas Atingidas (%)</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(taxa_metas_atingidas_pct)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "taxa-de-conclusao",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "avg(taxa_conclusao_pct)",
+                      "expression": "AVG(`taxa_conclusao_pct`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:18px\">Taxa de Conclusão de Tarefas (%)</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(taxa_conclusao_pct)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    },
+                    "significantFigures": {
+                      "type": "all"
+                    }
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 3,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "evolucao-temporal-volume-tarefas",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c8c85230",
+                  "fields": [
+                    {
+                      "name": "monthly(id_dim_data)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `id_dim_data`)"
+                    },
+                    {
+                      "name": "sum(total_tarefas)",
+                      "expression": "SUM(`total_tarefas`)"
+                    },
+                    {
+                      "name": "sum(total_concluidas)",
+                      "expression": "SUM(`total_concluidas`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block;\"><span style=\"font-size: 20px;\">Evolução Temporal do Volume de Tarefas</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  "#0AC2CA",
+                  "#44AD84"
+                ]
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(id_dim_data)",
+                  "format": {
+                    "type": "date",
+                    "date": "locale-short-month"
+                  },
+                  "displayName": "Mês",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "fields": [
+                    {
+                      "fieldName": "sum(total_tarefas)",
+                      "displayName": "Total de Tarefas"
+                    },
+                    {
+                      "fieldName": "sum(total_concluidas)",
+                      "displayName": "Total de Concluidas"
+                    }
+                  ],
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "axis": {
+                    "hideTitle": false,
+                    "hideLabels": false,
+                    "hideGrid": false,
+                    "title": "Quantidade de tarefas"
+                  }
+                },
+                "color": {
+                  "legend": {
+                    "position": "right",
+                    "title": ""
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "empresas-por-estados",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "066029fa",
+                  "fields": [
+                    {
+                      "name": "total_empresas",
+                      "expression": "`total_empresas`"
+                    },
+                    {
+                      "name": "estado",
+                      "expression": "`estado`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size: 18px;\">Empresas por Estados</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 1,
+              "widgetType": "choropleth-map",
+              "encodings": {
+                "color": {
+                  "fieldName": "total_empresas",
+                  "displayName": "Quantidade de Empresas",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "region": {
+                  "regionType": "mapbox-v4-admin",
+                  "admin0": {
+                    "type": "value",
+                    "value": "Brasil",
+                    "geographicRole": "admin0-name"
+                  },
+                  "admin1": {
+                    "fieldName": "estado",
+                    "type": "field",
+                    "geographicRole": "admin1-name"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 6,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "tarefas-por-estados-1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "066029fa",
+                  "fields": [
+                    {
+                      "name": "total_tarefas",
+                      "expression": "`total_tarefas`"
+                    },
+                    {
+                      "name": "estado",
+                      "expression": "`estado`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block;\"><span style=\"font-size: 18px;\">Tarefas por Estados</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 1,
+              "widgetType": "choropleth-map",
+              "encodings": {
+                "color": {
+                  "fieldName": "total_tarefas",
+                  "displayName": "Quantidade de Tarefas",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "region": {
+                  "regionType": "mapbox-v4-admin",
+                  "admin0": {
+                    "type": "value",
+                    "value": "Brasil",
+                    "geographicRole": "admin0-name"
+                  },
+                  "admin1": {
+                    "fieldName": "estado",
+                    "type": "field",
+                    "geographicRole": "admin1-name"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 12,
+            "width": 6,
+            "height": 7
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "567aabca",
+      "displayName": "Desempenho por Setor",
+      "layout": [
+        {
+          "widget": {
+            "name": "treinamentos-por-setor",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "aaef9d4e",
+                  "fields": [
+                    {
+                      "name": "setor_empresa",
+                      "expression": "`setor_empresa`"
+                    },
+                    {
+                      "name": "total_inscricoes",
+                      "expression": "`total_inscricoes`"
+                    },
+                    {
+                      "name": "total_realizados",
+                      "expression": "`total_realizados`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block;\"><span style=\"font-size: 20px;\">Treinamentos por Setor</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  "#0AC2CA",
+                  "#08BEAD"
+                ],
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "setor_empresa",
+                  "scale": {
+                    "type": "categorical",
+                    "categorySize": {
+                      "type": "number-of-categories",
+                      "number": 5
+                    },
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fields": [
+                    {
+                      "fieldName": "total_inscricoes",
+                      "displayName": "Total de Inscrições"
+                    },
+                    {
+                      "fieldName": "total_realizados",
+                      "displayName": "Total de Realizados"
+                    }
+                  ],
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 12,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "total-tarefas-por-setor",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "setor_empresa",
+                      "expression": "`setor_empresa`"
+                    },
+                    {
+                      "name": "sum(total_concluidas)",
+                      "expression": "SUM(`total_concluidas`)"
+                    },
+                    {
+                      "name": "sum(total_atrasadas)",
+                      "expression": "SUM(`total_atrasadas`)"
+                    },
+                    {
+                      "name": "sum(total_bloqueadas)",
+                      "expression": "SUM(`total_bloqueadas`)"
+                    },
+                    {
+                      "name": "sum(total_em_andamento)",
+                      "expression": "SUM(`total_em_andamento`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block;\"><span style=\"font-size:20px\">Total de Tarefas por Setor</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  "#1A3C63",
+                  "#0F6595",
+                  "#04BFAD",
+                  "#0AC2CA"
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "setor_empresa",
+                  "axis": {
+                    "hideTitle": true,
+                    "labelAngle": 0
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "categorySize": {
+                      "type": "number-of-categories",
+                      "number": 5
+                    },
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "fields": [
+                    {
+                      "fieldName": "sum(total_concluidas)",
+                      "displayName": "Concluidas"
+                    },
+                    {
+                      "fieldName": "sum(total_atrasadas)",
+                      "displayName": "Atrasadas"
+                    },
+                    {
+                      "fieldName": "sum(total_bloqueadas)",
+                      "displayName": "Bloqueadas"
+                    },
+                    {
+                      "fieldName": "sum(total_em_andamento)",
+                      "displayName": "Em andamento"
+                    }
+                  ],
+                  "axis": {
+                    "title": "Quantidade de Tarefas"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "taxa-conclusao-por-setor",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "setor_empresa",
+                      "expression": "`setor_empresa`"
+                    },
+                    {
+                      "name": "taxa_conclusao_pct",
+                      "expression": "`taxa_conclusao_pct`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block;\"><span style=\"font-size: 20px;\">Taxa de Conclusão por Setor</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  "#04BFAD"
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "setor_empresa",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "categorySize": {
+                      "type": "number-of-categories",
+                      "number": 5
+                    },
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "taxa_conclusao_pct",
+                  "displayName": "Taxa de Conclusão",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "distribuicao-taxa-conclusao-por-empresa",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "bin(taxa_conclusao_pct, binWidth=7)",
+                      "expression": "BIN_FLOOR(`taxa_conclusao_pct`, 7)"
+                    },
+                    {
+                      "name": "measure(count)",
+                      "expression": "MEASURE(`count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block;\"><span style=\"font-size: 20px;\">Distribuição da taxa de conclusão por empresa</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  "#04BFAD"
+                ]
+              },
+              "widgetType": "histogram",
+              "encodings": {
+                "x": {
+                  "fieldName": "bin(taxa_conclusao_pct, binWidth=7)",
+                  "displayName": "Taxa de conclusão (%)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(count)",
+                  "axis": {
+                    "title": "Quantidade de Empresas"
+                  },
+                  "displayName": "Qtd de Empresas",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 18,
+            "width": 12,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "4b20896a",
+      "displayName": "Atrasos e Riscos",
+      "layout": [
+        {
+          "widget": {
+            "name": "ficou-feio",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "sum(total_tarefas)",
+                      "expression": "SUM(`total_tarefas`)"
+                    },
+                    {
+                      "name": "nome_empresa",
+                      "expression": "`nome_empresa`"
+                    },
+                    {
+                      "name": "sum(total_atrasadas)",
+                      "expression": "SUM(`total_atrasadas`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": false,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size: 20px;\">Top empresas com tarefas atrasadas</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  "#04BFAD"
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "nome_empresa",
+                  "axis": {
+                    "labelAngle": 0,
+                    "hideTitle": true
+                  },
+                  "formatTemplate": "{{ @formatted }}",
+                  "scale": {
+                    "type": "categorical",
+                    "categorySize": {
+                      "type": "number-of-categories",
+                      "number": 5
+                    },
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_atrasadas)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    },
+                    "hideGroupSeparator": false
+                  },
+                  "axis": {
+                    "title": "Quantidade de Atrasadas"
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": false
+                },
+                "extra": [
+                  {
+                    "fieldName": "sum(total_tarefas)"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "total-de-atrasadas",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "sum(total_atrasadas)",
+                      "expression": "SUM(`total_atrasadas`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:20px\">Tarefas Atrasadas</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_atrasadas)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "total-de-bloqueadas-1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "countdistinct(nome_empresa)",
+                      "expression": "COUNT(DISTINCT `nome_empresa`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "IN_RANGE(`total_atrasadas`, 1D, NULL)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size: 20px;\">Empresas com atrasos</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(nome_empresa)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 0,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "9e914f9e",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "avg(taxa_atraso_pct)",
+                      "expression": "AVG(`taxa_atraso_pct`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size: 20px;\">Taxa de atraso (%)</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(taxa_atraso_pct)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 4,
+            "height": 3
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "d0c41a66",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "periodo",
+            "queries": [
+              {
+                "name": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1c04a3102101188cc1ae0332c2b66_id_dim_data",
+                "query": {
+                  "datasetName": "c8c85230",
+                  "fields": [
+                    {
+                      "name": "id_dim_data",
+                      "expression": "`id_dim_data`"
+                    },
+                    {
+                      "name": "id_dim_data_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Período",
+                  "fields": []
+                }
+              },
+              "widgetType": "filter-date-range-picker",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "id_dim_data",
+                    "queryName": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1c04a3102101188cc1ae0332c2b66_id_dim_data"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "7bf30106",
+      "displayName": "Visão - Empresa",
+      "layout": [
+        {
+          "widget": {
+            "name": "taxa-de-conclusao-de-tarefas-percent",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "taxa_conclusao_pct",
+                      "expression": "`taxa_conclusao_pct`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:18px\">Conclusão de Tarefas (%)</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "taxa_conclusao_pct"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "taxa-de-metas-atingidas-percent",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "0eb28ce1",
+                  "fields": [
+                    {
+                      "name": "avg(taxa_metas_atingidas_pct)",
+                      "expression": "AVG(`taxa_metas_atingidas_pct`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:20px\">Metas Atingidas (%)</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(taxa_metas_atingidas_pct)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 4,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "quantidade-de-problemas",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "taxa_atraso_pct",
+                      "expression": "`taxa_atraso_pct`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:20px\">Atraso de Tarefas (%)</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "taxa_atraso_pct"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 4,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "914b254b",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "aaef9d4e",
+                  "fields": [
+                    {
+                      "name": "taxa_realizacao_pct",
+                      "expression": "`taxa_realizacao_pct`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:20px\">Conclusão dos Treinamentos (%)</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "taxa_realizacao_pct"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 1,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c8fff42f",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "0eb28ce1",
+                  "fields": [
+                    {
+                      "name": "sum(id_empresa)",
+                      "expression": "SUM(`id_empresa`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`status_ciclo` IN ('PLANEJAMENTO', 'EXECUCAO', 'PADRONIZACAO', 'VERIFICACAO')"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:20px\">Total de Ciclos Ativos</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(id_empresa)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "df3638af",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c8c85230",
+                  "fields": [
+                    {
+                      "name": "monthly(id_dim_data)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `id_dim_data`)"
+                    },
+                    {
+                      "name": "sum(total_tarefas)",
+                      "expression": "SUM(`total_tarefas`)"
+                    },
+                    {
+                      "name": "sum(total_concluidas)",
+                      "expression": "SUM(`total_concluidas`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block;\"><span style=\"font-size:20px\">Evolução Temporal do Volume de Tarefas</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  "#0AC2CA",
+                  "#44AD84"
+                ]
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(id_dim_data)",
+                  "displayName": "Mês",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "fields": [
+                    {
+                      "fieldName": "sum(total_tarefas)",
+                      "displayName": "Total de Tarefas"
+                    },
+                    {
+                      "fieldName": "sum(total_concluidas)",
+                      "displayName": "Total de Concluidas"
+                    }
+                  ],
+                  "axis": {
+                    "title": "Quantidade de Tarefas"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "94692e0f",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "0eb28ce1",
+                  "fields": [
+                    {
+                      "name": "titulo_ciclo",
+                      "expression": "`titulo_ciclo`"
+                    },
+                    {
+                      "name": "status_ciclo",
+                      "expression": "`status_ciclo`"
+                    },
+                    {
+                      "name": "data_inicio",
+                      "expression": "`data_inicio`"
+                    },
+                    {
+                      "name": "data_fim_real",
+                      "expression": "`data_fim_real`"
+                    },
+                    {
+                      "name": "qtd_tarefas",
+                      "expression": "`qtd_tarefas`"
+                    },
+                    {
+                      "name": "tarefas_concluidas",
+                      "expression": "`tarefas_concluidas`"
+                    },
+                    {
+                      "name": "taxa_conclusao_tarefas_pct",
+                      "expression": "`taxa_conclusao_tarefas_pct`"
+                    },
+                    {
+                      "name": "taxa_metas_atingidas_pct",
+                      "expression": "`taxa_metas_atingidas_pct`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "### <span style=\"text-align:center;display:block;\">Ciclos da Empresa</span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "bandedRows": {
+                "enabled": false,
+                "backgroundColor": {
+                  "themeColorType": "visualizationColors",
+                  "position": 9
+                }
+              },
+              "displayRowNumbers": true,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "titulo_ciclo",
+                    "displayName": "Título"
+                  },
+                  {
+                    "fieldName": "status_ciclo",
+                    "contentAlignment": "left",
+                    "displayName": "Status",
+                    "style": {
+                      "type": "basic",
+                      "rules": [
+                        {
+                          "condition": {
+                            "operator": "="
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "fieldName": "data_inicio",
+                    "contentAlignment": "left",
+                    "displayName": "Data de Início"
+                  },
+                  {
+                    "fieldName": "data_fim_real",
+                    "contentAlignment": "center",
+                    "displayName": "Data de Término"
+                  },
+                  {
+                    "fieldName": "qtd_tarefas",
+                    "contentAlignment": "center",
+                    "displayName": "Qtd_Tarefas"
+                  },
+                  {
+                    "fieldName": "tarefas_concluidas",
+                    "contentAlignment": "center",
+                    "displayName": "Tarefas Concluídas"
+                  },
+                  {
+                    "fieldName": "taxa_conclusao_tarefas_pct",
+                    "contentAlignment": "center",
+                    "displayName": "Conclusão de Tarefas (%)"
+                  },
+                  {
+                    "fieldName": "taxa_metas_atingidas_pct",
+                    "contentAlignment": "center",
+                    "displayName": "Metas Atingidas (%)"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 13,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "filtro-por-empresa",
+            "queries": [
+              {
+                "name": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1c04a35d81f30908eb4e0dabd4e18_nome_empresa",
+                "query": {
+                  "datasetName": "0eb28ce1",
+                  "fields": [
+                    {
+                      "name": "nome_empresa",
+                      "expression": "`nome_empresa`"
+                    },
+                    {
+                      "name": "nome_empresa_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1c04a3102101188cc1ae0332c2b66_nome_empresa",
+                "query": {
+                  "datasetName": "c8c85230",
+                  "fields": [
+                    {
+                      "name": "nome_empresa",
+                      "expression": "`nome_empresa`"
+                    },
+                    {
+                      "name": "nome_empresa_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1c7495da61cbaac8c8c185f48eafb_nome_empresa",
+                "query": {
+                  "datasetName": "aaef9d4e",
+                  "fields": [
+                    {
+                      "name": "nome_empresa",
+                      "expression": "`nome_empresa`"
+                    },
+                    {
+                      "name": "nome_empresa_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1c04a1ff91f289c11d500f2ebbee5_nome_empresa",
+                "query": {
+                  "datasetName": "43758308",
+                  "fields": [
+                    {
+                      "name": "nome_empresa",
+                      "expression": "`nome_empresa`"
+                    },
+                    {
+                      "name": "nome_empresa_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"font-size: 15px;\">Filtro por Empresa</span>",
+                  "fields": []
+                }
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "nome_empresa",
+                    "queryName": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1c04a35d81f30908eb4e0dabd4e18_nome_empresa"
+                  },
+                  {
+                    "fieldName": "nome_empresa",
+                    "queryName": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1c04a3102101188cc1ae0332c2b66_nome_empresa"
+                  },
+                  {
+                    "fieldName": "nome_empresa",
+                    "queryName": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1c7495da61cbaac8c8c185f48eafb_nome_empresa"
+                  },
+                  {
+                    "fieldName": "nome_empresa",
+                    "queryName": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1c04a1ff91f289c11d500f2ebbee5_nome_empresa"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "0fa21f49",
+      "displayName": "Visão - Usuário",
+      "layout": [
+        {
+          "widget": {
+            "name": "total-de-tarefas-atribidas",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ae73e767",
+                  "fields": [
+                    {
+                      "name": "sum(total_tarefas_atribuidas)",
+                      "expression": "SUM(`total_tarefas_atribuidas`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:20px\">Total de Tarefas</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_tarefas_atribuidas)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "613e5dbf",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ae73e767",
+                  "fields": [
+                    {
+                      "name": "sum(tarefas_atrasadas)",
+                      "expression": "SUM(`tarefas_atrasadas`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size: 20px;\">Tarefas Atrasadas</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(tarefas_atrasadas)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 1,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "e0d2483e",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ae73e767",
+                  "fields": [
+                    {
+                      "name": "sum(taxa_conclusao_pct)",
+                      "expression": "SUM(`taxa_conclusao_pct`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:20px\">Taxa de Conclusão (%)</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(taxa_conclusao_pct)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 1,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "filtro-por-usuario",
+            "queries": [
+              {
+                "name": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1cd495d1417889c380ad6fbd1baaf_nome_usuario",
+                "query": {
+                  "datasetName": "ae73e767",
+                  "fields": [
+                    {
+                      "name": "nome_usuario",
+                      "expression": "`nome_usuario`"
+                    },
+                    {
+                      "name": "nome_usuario_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1d0b710e517de840f0d7aa098a057_nome_usuario",
+                "query": {
+                  "datasetName": "841752b2",
+                  "fields": [
+                    {
+                      "name": "nome_usuario",
+                      "expression": "`nome_usuario`"
+                    },
+                    {
+                      "name": "nome_usuario_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "<span style=\"font-size: 15px;\">Filtro por Usuário</span>",
+                  "fields": []
+                }
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "nome_usuario",
+                    "queryName": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1cd495d1417889c380ad6fbd1baaf_nome_usuario"
+                  },
+                  {
+                    "fieldName": "nome_usuario",
+                    "queryName": "dashboards/01f1c049c73e1f3398f19ad1bf954317/datasets/01f1d0b710e517de840f0d7aa098a057_nome_usuario"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "c1a91da7",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "841752b2",
+                  "fields": [
+                    {
+                      "name": "first(status_ciclo)",
+                      "expression": "FIRST(`status_ciclo`)"
+                    },
+                    {
+                      "name": "min(data_inicio)",
+                      "expression": "MIN(`data_inicio`)"
+                    },
+                    {
+                      "name": "max(data_estimada_fim)",
+                      "expression": "MAX(`data_estimada_fim`)"
+                    },
+                    {
+                      "name": "titulo_ciclo",
+                      "expression": "`titulo_ciclo`"
+                    }
+                  ],
+                  "cubeGroupingSets": {
+                    "sets": [
+                      {
+                        "fieldNames": [
+                          "titulo_ciclo"
+                        ]
+                      },
+                      {}
+                    ]
+                  },
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "ASC",
+                      "expression": "`titulo_ciclo`"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "showDescription": false,
+                "title": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:18px\">Ciclos do Usuário</span></span>",
+                  "fields": []
+                },
+                "description": {
+                  "value": "<span style=\"text-align:center;display:block\"><span style=\"font-size:12px\">Exibe somente os ciclos que o usuário tem participação.</span></span>",
+                  "fields": []
+                }
+              },
+              "version": 1,
+              "widgetType": "gantt",
+              "encodings": {
+                "rows": [
+                  {
+                    "fieldName": "titulo_ciclo",
+                    "displayName": "Título"
+                  }
+                ],
+                "range": {
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "axis": {
+                    "title": "Período do Ciclo"
+                  },
+                  "start": {
+                    "fieldName": "min(data_inicio)",
+                    "displayName": "Data de Início"
+                  },
+                  "end": {
+                    "fieldName": "max(data_estimada_fim)",
+                    "displayName": "Data de Fim Prevista"
+                  }
+                },
+                "color": {
+                  "fieldName": "first(status_ciclo)",
+                  "displayName": "Status",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 12,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
